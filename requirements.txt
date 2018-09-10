@@ -1,0 +1,5 @@
+Flask==1.0.2
+bernhard==0.2.6
+redis==2.10.6
+logstash_formatter==0.5.5
+riemann_wrapper==0.6.2
