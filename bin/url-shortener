@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from url_shortener import app
 from url_shortener.config import LISTEN_PORT, LISTEN_HOST
