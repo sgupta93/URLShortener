@@ -24,7 +24,7 @@ class UrlShortener:
 		code = self.shortcode(url)
 		try:
 			self.redis.set(config.REDIS_PREFIX + code, url)
-			return {'success': True, 'url': url, 'code': code, 'shorturl': config.URL_PREFIX + code}
+			return {'success': True, 'url': url, 'code': code, 'shorturl': config.URL_PREFIX + code[:20]}
 		except:
 			traceback.print_exc()
 			return {'success': False}

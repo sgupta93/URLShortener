@@ -1,5 +1,6 @@
 
 import logging
+import re
 from bernhard import Client
 from shorten import UrlShortener
 from urllib.parse import urlparse
@@ -40,7 +41,7 @@ def missing():
 @app.route('/400')
 @wrap_riemann('invalid', tags=['http_400'])
 def invalid():
-    return render_template('invalid')
+    return render_template('invalid.html')
 
 
 # # short url lookup
@@ -62,33 +63,26 @@ def lookup(code):
 @app.route('/', methods=['POST'])
 @wrap_riemann('creation')
 def shorten_url():
-    if request.json and 'url' in request.json:
-        u = urlparse(request.json['url'])
-        if u.netloc == '':
-            url = 'http://' + request.json['url']
-        else:
-            url = request.json['url']
-        res = shrt.shorten(url)
-        logger.debug("shortened %s to %s" % (url, res))
-        response = make_response(json.dumps(res))
-        response.headers['Content-Type'] = 'application/json'
-        return response
-
-    elif request.form and 'url' in request.form:
+    if request.form and 'url' in request.form:
         u = urlparse(request.form['url'])
         if u.netloc == '':
             url = 'http://' + request.form['url']
         else:
             url = request.form['url']
-        res = shrt.shorten(url)
-        logger.debug("shortened %s to %s" % (url, res))
-        return render_template('result.html', result=res)
-
+        if(validateURL(url) != None):
+            res = shrt.shorten(url)
+            logger.debug("shortened %s to %s" % (url, res))
+            return render_template('result.html', result=res)
+        else:
+            return redirect('/400')
     else:
         logger.info("invalid shorten request")
         return redirect('/400')
 
-
-# if __name__ == "__main__":
-# 	app.run()
-	
+def validateURL(url):
+    pattern = "^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]"
+    return re.match(pattern, url)
+    
+    
+if __name__ == "__main__":
+    app.run()
