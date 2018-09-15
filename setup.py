@@ -21,7 +21,7 @@ setup(name='url_shortener',
       packages=find_packages(),
       include_package_data=True,
       install_requires=install_requires,
-      scripts=['bin/url-shortener'],
+      scripts=['bin/url-shortener.py'],
       classifiers=[
           'Development Status :: 1 - Development',
           'Intended Audience :: Developers',
